@@ -1,0 +1,32 @@
+Source: parser
+Section: python
+Priority: extra
+Maintainer: Nikolay Kotov <mikola1717@gmail.com>
+Build-Depends:
+  cdbs,
+  debhelper (>= 7.0.50~),
+  python (>= 2.7),
+  python (<< 3.0),
+  python-support (>=1.0),
+  python-all (>= 2.5),
+  python-all-dev (>= 2.5),
+  python-setuptools,
+  python-pkg-resources (>= 0.6),
+  python-virtualenv,
+  libxslt-dev,
+  libpq-dev,
+Standards-Version: 3.9.1
+
+Package: parser
+Architecture: all
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Replaces: parser
+Conflicts: parser
+Description: parser
+
+Package: parser-static
+Architecture: all
+Depends: ${misc:Depends}
+Replaces: parser-static
+Description: static files for parser
+ Contains css, javascript and image files for parser package

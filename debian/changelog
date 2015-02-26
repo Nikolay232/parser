@@ -1,0 +1,6 @@
+parser (0.1.0) unstable; urgency=low
+
+  [ Nikolay Kotov ] <mikola1717@gmail.com>
+  * First package release
+
+ -- Nikolay Kotov <mikola1717@gmail.com>  Wed, 25 Feb 2015 22:05:20 +0400

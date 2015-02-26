@@ -1,0 +1,68 @@
+#!/bin/sh
+# postinst script for deb
+#
+# see: dh_installdeb(1)
+
+set -e
+
+case "$1" in
+    configure)
+    USER=parser
+    GROUP=parser
+
+    LOG_DIR=/var/log/parser
+    APP_DIR=/opt/parser
+    ETC_DIR=/etc/parser
+    MEDIA_DIR=/var/www/parser/media
+
+    DEFAULT_FILE=/etc/default/parser
+    PIDFILE=/var/run/parser.pid
+
+            if ! getent group | grep -q "^${GROUP}:" ; then
+                echo -n "Adding group ${GROUP}.."
+                addgroup --quiet --system $GROUP 2>/dev/null || true
+                echo "..done"
+            fi
+
+            if ! getent passwd  | grep -q "^${USER}:"; then
+                echo -n "Adding system user $USER.."
+                adduser --quiet \
+                    --system \
+                    --ingroup $GROUP \
+                    --no-create-home \
+                    --disabled-password \
+                    $USER 2>/dev/null || true
+                echo "..done"
+            fi
+
+            chown -R $USER:$GROUP $LOG_DIR
+            chmod -R 775 $LOG_DIR
+
+            chown -R $USER:$GROUP $APP_DIR
+            chmod -R 755 $APP_DIR
+
+            chown -R $USER:$GROUP $ETC_DIR
+            chmod 755 $ETC_DIR
+
+        if [ ! -d "$MEDIA_DIR" ];then
+        mkdir -p $MEDIA_DIR
+        fi
+        chown -R $USER:$GROUP $MEDIA_DIR
+            chmod -R 755 $MEDIA_DIR
+
+            [ -f "/etc/default/parser" ] && chown $USER:$GROUP $DEFAULT_FILE
+            [ -f "$PIDFILE" ] && chown $USER:$GROUP $PIDFILE
+
+            usermod -a -G www-data $USER
+
+            ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure|install|upgrade)
+            ;;
+    *)
+            echo "postinst called with unknown argument \`$1'" >&2
+            exit 1
+            ;;
+esac
+
+#DEBHELPER#

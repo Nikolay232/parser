@@ -1,0 +1,18 @@
+#!/bin/sh -e
+
+case "$1" in
+    upgrade|remove)
+	if [ -x "/etc/init.d/parser" ]; then
+	    if [ -x /usr/sbin/invoke-rc.d ]; then
+		invoke-rc.d parser stop || true
+	    else
+		/etc/init.d/parser stop || true
+	    fi
+	fi
+	sleep 2
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

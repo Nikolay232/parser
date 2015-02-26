@@ -1,0 +1,5 @@
+UWSGI_SOCKET=/tmp/parser.sock
+UWSGI_MODULE="parser.django_wsgi:application"
+UWSGI_ENV="DJANGO_SETTINGS_MODULE=parser.settings"
+UWSGI_LOGTO=/var/log/parser/uwsgi.log
+UWSGI_HTTP=0.0.0.0:9015

@@ -1,0 +1,40 @@
+- до релиза накатываем
+   https://raw.github.com/hhru/hrbrand.ru/050eddf08a9e2494273343263778b1f0b150ce7b/init/1.5.after.sql?login=advoretsky&token=6a0abac22a32b236ec5b4994410b7765
+   https://raw.github.com/hhru/hrbrand.ru/050eddf08a9e2494273343263778b1f0b150ce7b/init/2.0.before.sql?login=advoretsky&token=1456246a839c4e1dedbea6ba2e158a3c
+
+добавляем в конфиг
+
+[logging]
+@@ -25,6 +25,7 @@
+   # allowed handlers = ['syslog', 'file']
+   handler = 'file'
+   filename = '/var/log/hh-hrbrand/hrbrand.log'
++  emails_filename = '/var/log/hh-hrbrand/emails.log'
+   facility = 'user'
+
++[rating]
++  registration_open = false
++
+
+сливаем папку media со старого хостинга
+ssh dmskvor2@rating.hrbrand.ru tar cz /home/vhosts/rating.hrbrand.ru/private/django-projects/hrb/media > old_rating.media.20120505.tgz
+делаем backup папки /var/www/hh-hrbrand/media/
+заливаем содержимое  old_rating.media.20120505.tgz в /var/www/hh-hrbrand/media/ (пересечений вроде нет, даже если есть - пофиг)
+
+сливаем данные из БД со старого хостинга
+ssh dmskvor2@rating.hrbrand.ru pg_dump -U hrbuser dmskvor2_hrbsite | gzip > /tmp/old_rating.sql.gz
+патчим в дампе название схемы на rating (временная схема для миграции)
+
+zgrep -v 'public\.' /tmp/old_rating.sql.gz | sed 's/SET search_path = public/SET search_path = rating/' | gzip > /tmp/old_rating.patched.sql.gz
+
+заливаем пропатченный дамп в базу hhservice
+
+запускаем скрипт миграции
+https://raw.github.com/hhru/hrbrand.ru/050eddf08a9e2494273343263778b1f0b150ce7b/init/migrate/migrate_rating.sql?login=advoretsky&token=f41dc8c29e8f24934586161c6d9cdaef
+
+выкатываем hh-hrbrand-static=2.0.1
+выкатываем hh-hrbrand=2.0.1
+
+удаляем схему rating
+DROP SCHEMA rating CASCADE;
+

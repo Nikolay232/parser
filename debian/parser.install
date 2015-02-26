@@ -1,0 +1,5 @@
+bin /opt/parser/
+eggs /opt/parser/
+config/settings.py /etc/parser
+parts/uwsgi/uwsgi.xml /opt/parser/
+config/uwsgi.conf /etc/parser

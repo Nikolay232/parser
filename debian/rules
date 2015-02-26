@@ -1,0 +1,28 @@
+#!/usr/bin/make -f
+
+VENV_DIR = /tmp/parser-env
+
+include /usr/share/cdbs/1/rules/debhelper.mk
+
+BUILD_TIME=`date -R`
+MAIN_MODULE_PATH=$(CURDIR)/eggs/parser-$(DEB_VERSION)-py2.7.egg/parser/
+MAIN_MODULE_INIT=${MAIN_MODULE_PATH}__init__.py
+
+clean::
+	rm -rf bin/ eggs/ build/ develop-eggs/ parts/ dist/ .installed.cfg $(VENV_DIR)
+
+build:
+	virtualenv --setuptools $(VENV_DIR)
+	$(VENV_DIR)/bin/python setup.py sdist -q
+	$(VENV_DIR)/bin/pip install -U setuptools
+	$(VENV_DIR)/bin/python bootstrap.py -c buildout.release.cfg
+	./bin/buildout -c buildout.release.cfg
+	test -z "$(shell echo $$WITH_TESTS)" || $(VENV_DIR)/bin/pip install nose
+	test -z "$(shell echo $$WITH_TESTS)" || bin/python setup.py nosetests $$TEST_ARGS
+
+
+install/parser::
+	rm -f ${MAIN_MODULE_PATH}settings_override*
+	sed -i "s/\(package_name = \).*/\1'$(DEB_SOURCE_PACKAGE)'/" $(MAIN_MODULE_INIT)
+	sed -i "s/\(package_version = \).*/\1'$(DEB_VERSION)'/" $(MAIN_MODULE_INIT)
+	sed -i "s/\(package_buildtime = \).*/\1'$(BUILD_TIME)'/" $(MAIN_MODULE_INIT)
