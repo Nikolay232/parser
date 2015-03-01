@@ -9,7 +9,9 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
 
-    url(r'^$', index, name='index'),
+    #url(r'^$', index, name='index'),
+    url(r'^admin_tools/', include('admin_tools.urls')),
+    url(r'^admin/', include(admin.site.urls))
 )
 
 if DEBUG:

@@ -10,7 +10,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': 'localhost',
-        'NAME': 'parser_bd',
+        'NAME': 'parser_db',
         'USER': 'parser_user',
         'PASSWORD': '1234'
     }
